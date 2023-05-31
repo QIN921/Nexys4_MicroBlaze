@@ -245,12 +245,6 @@ proc create_root_design { parentCell } {
 
 
   # Create interface ports
-  set PS2_Clk [ create_bd_intf_port -mode Master -vlnv xilinx.com:interface:gpio_rtl:1.0 PS2_Clk ]
-
-  set PS2_Data [ create_bd_intf_port -mode Master -vlnv xilinx.com:interface:gpio_rtl:1.0 PS2_Data ]
-
-  set VGA_INTF_0 [ create_bd_intf_port -mode Master -vlnv xilinx.com:interface:vga_rtl:1.0 VGA_INTF_0 ]
-
   set button [ create_bd_intf_port -mode Master -vlnv xilinx.com:interface:gpio_rtl:1.0 button ]
 
   set dual_seven_seg_led_disp [ create_bd_intf_port -mode Master -vlnv xilinx.com:interface:gpio_rtl:1.0 dual_seven_seg_led_disp ]
@@ -265,6 +259,8 @@ proc create_root_design { parentCell } {
   # Create ports
   set MISO [ create_bd_port -dir I MISO ]
   set MOSI [ create_bd_port -dir O MOSI ]
+  set PS2_Clk_O [ create_bd_port -dir O PS2_Clk_O ]
+  set PS2_Data_I [ create_bd_port -dir I PS2_Data_I ]
   set SCLK0 [ create_bd_port -dir O SCLK0 ]
   set SCLK1 [ create_bd_port -dir O SCLK1 ]
   set SS0 [ create_bd_port -dir O -from 0 -to 0 SS0 ]
@@ -278,6 +274,11 @@ proc create_root_design { parentCell } {
   set_property -dict [ list \
    CONFIG.PHASE {0.000} \
  ] $sys_clock
+  set tft_hsync [ create_bd_port -dir O tft_hsync ]
+  set tft_vga_b [ create_bd_port -dir O -from 5 -to 0 tft_vga_b ]
+  set tft_vga_g [ create_bd_port -dir O -from 5 -to 0 tft_vga_g ]
+  set tft_vga_r [ create_bd_port -dir O -from 5 -to 0 tft_vga_r ]
+  set tft_vsync [ create_bd_port -dir O tft_vsync ]
 
   # Create instance: axi_gpio_0, and set properties
   set axi_gpio_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_gpio:2.0 axi_gpio_0 ]
@@ -413,7 +414,6 @@ proc create_root_design { parentCell } {
   set microblaze_0_xlconcat [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlconcat:2.1 microblaze_0_xlconcat ]
   set_property -dict [ list \
    CONFIG.NUM_PORTS {10} \
-   CONFIG.dout_width {10} \
  ] $microblaze_0_xlconcat
 
   # Create instance: rst_clk_wiz_1_100M, and set properties
@@ -436,10 +436,7 @@ proc create_root_design { parentCell } {
   connect_bd_intf_net -intf_net axi_interconnect_0_M09_AXI [get_bd_intf_pins axi_interconnect_0/M09_AXI] [get_bd_intf_pins axi_ps2_0/S_AXI]
   connect_bd_intf_net -intf_net axi_interconnect_0_M10_AXI [get_bd_intf_pins axi_interconnect_0/M10_AXI] [get_bd_intf_pins microblaze_0_axi_intc/s_axi]
   connect_bd_intf_net -intf_net axi_interconnect_0_M11_AXI [get_bd_intf_pins axi_interconnect_0/M11_AXI] [get_bd_intf_pins axi_tft_0/S_AXI_MM]
-  connect_bd_intf_net -intf_net axi_ps2_0_PS2_Clk [get_bd_intf_ports PS2_Clk] [get_bd_intf_pins axi_ps2_0/PS2_Clk]
-  connect_bd_intf_net -intf_net axi_ps2_0_PS2_Data [get_bd_intf_ports PS2_Data] [get_bd_intf_pins axi_ps2_0/PS2_Data]
   connect_bd_intf_net -intf_net axi_tft_0_M_AXI_MM [get_bd_intf_pins axi_interconnect_0/S01_AXI] [get_bd_intf_pins axi_tft_0/M_AXI_MM]
-  connect_bd_intf_net -intf_net axi_tft_0_VGA_INTF [get_bd_intf_ports VGA_INTF_0] [get_bd_intf_pins axi_tft_0/VGA_INTF]
   connect_bd_intf_net -intf_net axi_uartlite_0_UART [get_bd_intf_ports usb_uart] [get_bd_intf_pins axi_uartlite_0/UART]
   connect_bd_intf_net -intf_net microblaze_0_M_AXI_DP [get_bd_intf_pins axi_interconnect_0/S00_AXI] [get_bd_intf_pins microblaze_0/M_AXI_DP]
   connect_bd_intf_net -intf_net microblaze_0_debug [get_bd_intf_pins mdm_1/MBDEBUG_0] [get_bd_intf_pins microblaze_0/DEBUG]
@@ -448,9 +445,11 @@ proc create_root_design { parentCell } {
   connect_bd_intf_net -intf_net microblaze_0_interrupt [get_bd_intf_pins microblaze_0/INTERRUPT] [get_bd_intf_pins microblaze_0_axi_intc/interrupt]
 
   # Create port connections
+  connect_bd_net -net PS2_Data_I_0_1 [get_bd_ports PS2_Data_I] [get_bd_pins axi_ps2_0/PS2_Data_I]
   connect_bd_net -net axi_gpio_0_gpio2_io_o [get_bd_ports an] [get_bd_pins axi_gpio_0/gpio2_io_o]
   connect_bd_net -net axi_gpio_1_ip2intc_irpt [get_bd_pins axi_gpio_1/ip2intc_irpt] [get_bd_pins microblaze_0_xlconcat/In0]
   connect_bd_net -net axi_gpio_2_ip2intc_irpt [get_bd_pins axi_gpio_2/ip2intc_irpt] [get_bd_pins microblaze_0_xlconcat/In9]
+  connect_bd_net -net axi_ps2_0_PS2_Clk_O [get_bd_ports PS2_Clk_O] [get_bd_pins axi_ps2_0/PS2_Clk_O]
   connect_bd_net -net axi_ps2_0_PS2_interrupt [get_bd_pins axi_ps2_0/PS2_interrupt] [get_bd_pins microblaze_0_xlconcat/In8]
   connect_bd_net -net axi_quad_spi_0_ip2intc_irpt [get_bd_pins axi_quad_spi_0/ip2intc_irpt] [get_bd_pins microblaze_0_xlconcat/In4]
   connect_bd_net -net axi_quad_spi_0_sck_o [get_bd_ports SCLK1] [get_bd_pins axi_quad_spi_0/sck_o]
@@ -460,6 +459,11 @@ proc create_root_design { parentCell } {
   connect_bd_net -net axi_quad_spi_1_sck_o [get_bd_ports SCLK0] [get_bd_pins axi_quad_spi_1/sck_o]
   connect_bd_net -net axi_quad_spi_1_ss_o [get_bd_ports SS0] [get_bd_pins axi_quad_spi_1/ss_o]
   connect_bd_net -net axi_tft_0_ip2intc_irpt [get_bd_pins axi_tft_0/ip2intc_irpt] [get_bd_pins microblaze_0_xlconcat/In1]
+  connect_bd_net -net axi_tft_0_tft_hsync [get_bd_ports tft_hsync] [get_bd_pins axi_tft_0/tft_hsync]
+  connect_bd_net -net axi_tft_0_tft_vga_b [get_bd_ports tft_vga_b] [get_bd_pins axi_tft_0/tft_vga_b]
+  connect_bd_net -net axi_tft_0_tft_vga_g [get_bd_ports tft_vga_g] [get_bd_pins axi_tft_0/tft_vga_g]
+  connect_bd_net -net axi_tft_0_tft_vga_r [get_bd_ports tft_vga_r] [get_bd_pins axi_tft_0/tft_vga_r]
+  connect_bd_net -net axi_tft_0_tft_vsync [get_bd_ports tft_vsync] [get_bd_pins axi_tft_0/tft_vsync]
   connect_bd_net -net axi_timer_0_interrupt [get_bd_pins axi_timer_0/interrupt] [get_bd_pins microblaze_0_xlconcat/In3]
   connect_bd_net -net axi_uartlite_0_interrupt [get_bd_pins axi_uartlite_0/interrupt] [get_bd_pins microblaze_0_xlconcat/In2]
   connect_bd_net -net axi_uartlite_1_interrupt [get_bd_pins axi_uartlite_1/interrupt] [get_bd_pins microblaze_0_xlconcat/In7]
@@ -489,7 +493,7 @@ proc create_root_design { parentCell } {
   assign_bd_address -offset 0x40600000 -range 0x00010000 -target_address_space [get_bd_addr_spaces microblaze_0/Data] [get_bd_addr_segs axi_uartlite_0/S_AXI/Reg] -force
   assign_bd_address -offset 0x40610000 -range 0x00010000 -target_address_space [get_bd_addr_spaces microblaze_0/Data] [get_bd_addr_segs axi_uartlite_1/S_AXI/Reg] -force
   assign_bd_address -offset 0x40620000 -range 0x00010000 -target_address_space [get_bd_addr_spaces microblaze_0/Data] [get_bd_addr_segs axi_uartlite_2/S_AXI/Reg] -force
-  assign_bd_address -offset 0x00000000 -range 0x00008000 -target_address_space [get_bd_addr_spaces microblaze_0/Data] [get_bd_addr_segs microblaze_0_local_memory/dlmb_bram_if_cntlr/SLMB/Mem] -force
+  assign_bd_address -offset 0x00000000 -range 0x00040000 -target_address_space [get_bd_addr_spaces microblaze_0/Data] [get_bd_addr_segs microblaze_0_local_memory/dlmb_bram_if_cntlr/SLMB/Mem] -force
   assign_bd_address -offset 0x00000000 -range 0x00008000 -target_address_space [get_bd_addr_spaces microblaze_0/Instruction] [get_bd_addr_segs microblaze_0_local_memory/ilmb_bram_if_cntlr/SLMB/Mem] -force
   assign_bd_address -offset 0x41200000 -range 0x00010000 -target_address_space [get_bd_addr_spaces microblaze_0/Data] [get_bd_addr_segs microblaze_0_axi_intc/S_AXI/Reg] -force
 

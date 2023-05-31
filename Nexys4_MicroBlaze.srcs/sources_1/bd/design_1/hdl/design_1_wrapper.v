@@ -1,7 +1,7 @@
 //Copyright 1986-2019 Xilinx, Inc. All Rights Reserved.
 //--------------------------------------------------------------------------------
 //Tool Version: Vivado v.2019.2 (win64) Build 2708876 Wed Nov  6 21:40:23 MST 2019
-//Date        : Tue May 23 10:40:39 2023
+//Date        : Wed May 31 21:09:28 2023
 //Host        : QinOMEN running 64-bit major release  (build 9200)
 //Command     : generate_target design_1_wrapper.bd
 //Design      : design_1_wrapper
@@ -12,20 +12,12 @@
 module design_1_wrapper
    (MISO,
     MOSI,
-    PS2_Clk_tri_io,
-    PS2_Data_tri_io,
+    PS2_Clk_O,
+    PS2_Data_I,
     SCLK0,
     SCLK1,
     SS0,
     SS1,
-    VGA_INTF_0_blue,
-    VGA_INTF_0_clk,
-    VGA_INTF_0_de,
-    VGA_INTF_0_dps,
-    VGA_INTF_0_green,
-    VGA_INTF_0_hsync,
-    VGA_INTF_0_red,
-    VGA_INTF_0_vsync,
     an,
     button_tri_io,
     dual_seven_seg_led_disp_tri_io,
@@ -33,24 +25,21 @@ module design_1_wrapper
     reset,
     sw_tri_i,
     sys_clock,
+    tft_hsync,
+    tft_vga_b,
+    tft_vga_g,
+    tft_vga_r,
+    tft_vsync,
     usb_uart_rxd,
     usb_uart_txd);
   input MISO;
   output MOSI;
-  inout PS2_Clk_tri_io;
-  inout PS2_Data_tri_io;
+  output PS2_Clk_O;
+  input PS2_Data_I;
   output SCLK0;
   output SCLK1;
   output [0:0]SS0;
   output [0:0]SS1;
-  output [5:0]VGA_INTF_0_blue;
-  output VGA_INTF_0_clk;
-  output VGA_INTF_0_de;
-  output VGA_INTF_0_dps;
-  output [5:0]VGA_INTF_0_green;
-  output VGA_INTF_0_hsync;
-  output [5:0]VGA_INTF_0_red;
-  output VGA_INTF_0_vsync;
   output [7:0]an;
   inout [4:0]button_tri_io;
   inout [6:0]dual_seven_seg_led_disp_tri_io;
@@ -58,31 +47,22 @@ module design_1_wrapper
   input reset;
   input [15:0]sw_tri_i;
   input sys_clock;
+  output tft_hsync;
+  output [5:0]tft_vga_b;
+  output [5:0]tft_vga_g;
+  output [5:0]tft_vga_r;
+  output tft_vsync;
   input usb_uart_rxd;
   output usb_uart_txd;
 
   wire MISO;
   wire MOSI;
-  wire PS2_Clk_tri_i;
-  wire PS2_Clk_tri_io;
-  wire PS2_Clk_tri_o;
-  wire PS2_Clk_tri_t;
-  wire PS2_Data_tri_i;
-  wire PS2_Data_tri_io;
-  wire PS2_Data_tri_o;
-  wire PS2_Data_tri_t;
+  wire PS2_Clk_O;
+  wire PS2_Data_I;
   wire SCLK0;
   wire SCLK1;
   wire [0:0]SS0;
   wire [0:0]SS1;
-  wire [5:0]VGA_INTF_0_blue;
-  wire VGA_INTF_0_clk;
-  wire VGA_INTF_0_de;
-  wire VGA_INTF_0_dps;
-  wire [5:0]VGA_INTF_0_green;
-  wire VGA_INTF_0_hsync;
-  wire [5:0]VGA_INTF_0_red;
-  wire VGA_INTF_0_vsync;
   wire [7:0]an;
   wire [0:0]button_tri_i_0;
   wire [1:1]button_tri_i_1;
@@ -199,19 +179,14 @@ module design_1_wrapper
   wire reset;
   wire [15:0]sw_tri_i;
   wire sys_clock;
+  wire tft_hsync;
+  wire [5:0]tft_vga_b;
+  wire [5:0]tft_vga_g;
+  wire [5:0]tft_vga_r;
+  wire tft_vsync;
   wire usb_uart_rxd;
   wire usb_uart_txd;
 
-  IOBUF PS2_Clk_tri_iobuf
-       (.I(PS2_Clk_tri_o),
-        .IO(PS2_Clk_tri_io),
-        .O(PS2_Clk_tri_i),
-        .T(PS2_Clk_tri_t));
-  IOBUF PS2_Data_tri_iobuf
-       (.I(PS2_Data_tri_o),
-        .IO(PS2_Data_tri_io),
-        .O(PS2_Data_tri_i),
-        .T(PS2_Data_tri_t));
   IOBUF button_tri_iobuf_0
        (.I(button_tri_o_0),
         .IO(button_tri_io[0]),
@@ -240,24 +215,12 @@ module design_1_wrapper
   design_1 design_1_i
        (.MISO(MISO),
         .MOSI(MOSI),
-        .PS2_Clk_tri_i(PS2_Clk_tri_i),
-        .PS2_Clk_tri_o(PS2_Clk_tri_o),
-        .PS2_Clk_tri_t(PS2_Clk_tri_t),
-        .PS2_Data_tri_i(PS2_Data_tri_i),
-        .PS2_Data_tri_o(PS2_Data_tri_o),
-        .PS2_Data_tri_t(PS2_Data_tri_t),
+        .PS2_Clk_O(PS2_Clk_O),
+        .PS2_Data_I(PS2_Data_I),
         .SCLK0(SCLK0),
         .SCLK1(SCLK1),
         .SS0(SS0),
         .SS1(SS1),
-        .VGA_INTF_0_blue(VGA_INTF_0_blue),
-        .VGA_INTF_0_clk(VGA_INTF_0_clk),
-        .VGA_INTF_0_de(VGA_INTF_0_de),
-        .VGA_INTF_0_dps(VGA_INTF_0_dps),
-        .VGA_INTF_0_green(VGA_INTF_0_green),
-        .VGA_INTF_0_hsync(VGA_INTF_0_hsync),
-        .VGA_INTF_0_red(VGA_INTF_0_red),
-        .VGA_INTF_0_vsync(VGA_INTF_0_vsync),
         .an(an),
         .button_tri_i({button_tri_i_4,button_tri_i_3,button_tri_i_2,button_tri_i_1,button_tri_i_0}),
         .button_tri_o({button_tri_o_4,button_tri_o_3,button_tri_o_2,button_tri_o_1,button_tri_o_0}),
@@ -271,6 +234,11 @@ module design_1_wrapper
         .reset(reset),
         .sw_tri_i(sw_tri_i),
         .sys_clock(sys_clock),
+        .tft_hsync(tft_hsync),
+        .tft_vga_b(tft_vga_b),
+        .tft_vga_g(tft_vga_g),
+        .tft_vga_r(tft_vga_r),
+        .tft_vsync(tft_vsync),
         .usb_uart_rxd(usb_uart_rxd),
         .usb_uart_txd(usb_uart_txd));
   IOBUF dual_seven_seg_led_disp_tri_iobuf_0

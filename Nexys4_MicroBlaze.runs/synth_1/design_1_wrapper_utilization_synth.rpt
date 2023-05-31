@@ -1,7 +1,7 @@
 Copyright 1986-2019 Xilinx, Inc. All Rights Reserved.
 ---------------------------------------------------------------------------------------------------------------------------
 | Tool Version : Vivado v.2019.2 (win64) Build 2708876 Wed Nov  6 21:40:23 MST 2019
-| Date         : Tue May 23 16:15:08 2023
+| Date         : Wed May 31 21:13:39 2023
 | Host         : QinOMEN running 64-bit major release  (build 9200)
 | Command      : report_utilization -file design_1_wrapper_utilization_synth.rpt -pb design_1_wrapper_utilization_synth.pb
 | Design       : design_1_wrapper
@@ -30,8 +30,8 @@ Table of Contents
 +----------------------------+------+-------+-----------+-------+
 |          Site Type         | Used | Fixed | Available | Util% |
 +----------------------------+------+-------+-----------+-------+
-| Slice LUTs*                | 6106 |     0 |     63400 |  9.63 |
-|   LUT as Logic             | 5660 |     0 |     63400 |  8.93 |
+| Slice LUTs*                | 6113 |     0 |     63400 |  9.64 |
+|   LUT as Logic             | 5667 |     0 |     63400 |  8.94 |
 |   LUT as Memory            |  446 |     0 |     19000 |  2.35 |
 |     LUT as Distributed RAM |  240 |     0 |           |       |
 |     LUT as Shift Register  |  206 |     0 |           |       |
@@ -70,9 +70,9 @@ Table of Contents
 +-------------------+------+-------+-----------+-------+
 |     Site Type     | Used | Fixed | Available | Util% |
 +-------------------+------+-------+-----------+-------+
-| Block RAM Tile    |  8.5 |     0 |       135 |  6.30 |
-|   RAMB36/FIFO*    |    8 |     0 |       135 |  5.93 |
-|     RAMB36E1 only |    8 |       |           |       |
+| Block RAM Tile    | 64.5 |     0 |       135 | 47.78 |
+|   RAMB36/FIFO*    |   64 |     0 |       135 | 47.41 |
+|     RAMB36E1 only |   64 |       |           |       |
 |   RAMB18          |    1 |     0 |       270 |  0.37 |
 |     RAMB18E1 only |    1 |       |           |       |
 +-------------------+------+-------+-----------+-------+
@@ -95,7 +95,7 @@ Table of Contents
 +-----------------------------+------+-------+-----------+-------+
 |          Site Type          | Used | Fixed | Available | Util% |
 +-----------------------------+------+-------+-----------+-------+
-| Bonded IOB                  |   87 |     0 |       210 | 41.43 |
+| Bonded IOB                  |   84 |     0 |       210 | 40.00 |
 | Bonded IPADs                |    0 |     0 |         2 |  0.00 |
 | PHY_CONTROL                 |    0 |     0 |         6 |  0.00 |
 | PHASER_REF                  |    0 |     0 |         6 |  0.00 |
@@ -154,10 +154,10 @@ Table of Contents
 +------------+------+---------------------+
 | FDRE       | 6912 |        Flop & Latch |
 | LUT6       | 2110 |                 LUT |
-| LUT5       | 1363 |                 LUT |
+| LUT5       | 1364 |                 LUT |
 | LUT3       | 1214 |                 LUT |
-| LUT4       | 1047 |                 LUT |
-| LUT2       |  882 |                 LUT |
+| LUT4       | 1045 |                 LUT |
+| LUT2       |  890 |                 LUT |
 | FDCE       |  332 |        Flop & Latch |
 | RAMD32     |  328 |  Distributed Memory |
 | FDSE       |  308 |        Flop & Latch |
@@ -166,13 +166,13 @@ Table of Contents
 | CARRY4     |  158 |          CarryLogic |
 | MUXF7      |  111 |               MuxFx |
 | RAMS32     |   88 |  Distributed Memory |
-| IBUF       |   50 |                  IO |
+| RAMB36E1   |   64 |        Block Memory |
+| IBUF       |   49 |                  IO |
 | FDPE       |   41 |        Flop & Latch |
-| OBUF       |   37 |                  IO |
 | SRLC32E    |   35 |  Distributed Memory |
-| OBUFT      |   30 |                  IO |
+| OBUF       |   35 |                  IO |
+| OBUFT      |   28 |                  IO |
 | SRLC16E    |    8 |  Distributed Memory |
-| RAMB36E1   |    8 |        Block Memory |
 | BUFG       |    4 |               Clock |
 | RAMB18E1   |    1 |        Block Memory |
 | ODDR       |    1 |                  IO |

@@ -1,7 +1,7 @@
 //Copyright 1986-2019 Xilinx, Inc. All Rights Reserved.
 //--------------------------------------------------------------------------------
 //Tool Version: Vivado v.2019.2 (win64) Build 2708876 Wed Nov  6 21:40:23 MST 2019
-//Date        : Tue May 23 10:40:39 2023
+//Date        : Wed May 31 21:09:27 2023
 //Host        : QinOMEN running 64-bit major release  (build 9200)
 //Command     : generate_target design_1.bd
 //Design      : design_1
@@ -13,24 +13,12 @@
 module design_1
    (MISO,
     MOSI,
-    PS2_Clk_tri_i,
-    PS2_Clk_tri_o,
-    PS2_Clk_tri_t,
-    PS2_Data_tri_i,
-    PS2_Data_tri_o,
-    PS2_Data_tri_t,
+    PS2_Clk_O,
+    PS2_Data_I,
     SCLK0,
     SCLK1,
     SS0,
     SS1,
-    VGA_INTF_0_blue,
-    VGA_INTF_0_clk,
-    VGA_INTF_0_de,
-    VGA_INTF_0_dps,
-    VGA_INTF_0_green,
-    VGA_INTF_0_hsync,
-    VGA_INTF_0_red,
-    VGA_INTF_0_vsync,
     an,
     button_tri_i,
     button_tri_o,
@@ -44,28 +32,21 @@ module design_1
     reset,
     sw_tri_i,
     sys_clock,
+    tft_hsync,
+    tft_vga_b,
+    tft_vga_g,
+    tft_vga_r,
+    tft_vsync,
     usb_uart_rxd,
     usb_uart_txd);
   input MISO;
   output MOSI;
-  (* X_INTERFACE_INFO = "xilinx.com:interface:gpio:1.0 PS2_Clk " *) input PS2_Clk_tri_i;
-  (* X_INTERFACE_INFO = "xilinx.com:interface:gpio:1.0 PS2_Clk " *) output PS2_Clk_tri_o;
-  (* X_INTERFACE_INFO = "xilinx.com:interface:gpio:1.0 PS2_Clk " *) output PS2_Clk_tri_t;
-  (* X_INTERFACE_INFO = "xilinx.com:interface:gpio:1.0 PS2_Data " *) input PS2_Data_tri_i;
-  (* X_INTERFACE_INFO = "xilinx.com:interface:gpio:1.0 PS2_Data " *) output PS2_Data_tri_o;
-  (* X_INTERFACE_INFO = "xilinx.com:interface:gpio:1.0 PS2_Data " *) output PS2_Data_tri_t;
+  output PS2_Clk_O;
+  input PS2_Data_I;
   output SCLK0;
   output SCLK1;
   output [0:0]SS0;
   output [0:0]SS1;
-  (* X_INTERFACE_INFO = "xilinx.com:interface:vga:1.0 VGA_INTF_0 BLUE" *) output [5:0]VGA_INTF_0_blue;
-  (* X_INTERFACE_INFO = "xilinx.com:interface:vga:1.0 VGA_INTF_0 CLK" *) output VGA_INTF_0_clk;
-  (* X_INTERFACE_INFO = "xilinx.com:interface:vga:1.0 VGA_INTF_0 DE" *) output VGA_INTF_0_de;
-  (* X_INTERFACE_INFO = "xilinx.com:interface:vga:1.0 VGA_INTF_0 DPS" *) output VGA_INTF_0_dps;
-  (* X_INTERFACE_INFO = "xilinx.com:interface:vga:1.0 VGA_INTF_0 GREEN" *) output [5:0]VGA_INTF_0_green;
-  (* X_INTERFACE_INFO = "xilinx.com:interface:vga:1.0 VGA_INTF_0 HSYNC" *) output VGA_INTF_0_hsync;
-  (* X_INTERFACE_INFO = "xilinx.com:interface:vga:1.0 VGA_INTF_0 RED" *) output [5:0]VGA_INTF_0_red;
-  (* X_INTERFACE_INFO = "xilinx.com:interface:vga:1.0 VGA_INTF_0 VSYNC" *) output VGA_INTF_0_vsync;
   output [7:0]an;
   (* X_INTERFACE_INFO = "xilinx.com:interface:gpio:1.0 button TRI_I" *) input [4:0]button_tri_i;
   (* X_INTERFACE_INFO = "xilinx.com:interface:gpio:1.0 button TRI_O" *) output [4:0]button_tri_o;
@@ -79,9 +60,15 @@ module design_1
   (* X_INTERFACE_INFO = "xilinx.com:signal:reset:1.0 RST.RESET RST" *) (* X_INTERFACE_PARAMETER = "XIL_INTERFACENAME RST.RESET, INSERT_VIP 0, POLARITY ACTIVE_LOW" *) input reset;
   (* X_INTERFACE_INFO = "xilinx.com:interface:gpio:1.0 sw TRI_I" *) input [15:0]sw_tri_i;
   (* X_INTERFACE_INFO = "xilinx.com:signal:clock:1.0 CLK.SYS_CLOCK CLK" *) (* X_INTERFACE_PARAMETER = "XIL_INTERFACENAME CLK.SYS_CLOCK, CLK_DOMAIN design_1_sys_clock, FREQ_HZ 100000000, INSERT_VIP 0, PHASE 0.000" *) input sys_clock;
+  output tft_hsync;
+  output [5:0]tft_vga_b;
+  output [5:0]tft_vga_g;
+  output [5:0]tft_vga_r;
+  output tft_vsync;
   (* X_INTERFACE_INFO = "xilinx.com:interface:uart:1.0 usb_uart RxD" *) input usb_uart_rxd;
   (* X_INTERFACE_INFO = "xilinx.com:interface:uart:1.0 usb_uart TxD" *) output usb_uart_txd;
 
+  wire PS2_Data_I_0_1;
   wire [6:0]axi_gpio_0_GPIO_TRI_I;
   wire [6:0]axi_gpio_0_GPIO_TRI_O;
   wire [6:0]axi_gpio_0_GPIO_TRI_T;
@@ -301,12 +288,7 @@ module design_1
   wire axi_interconnect_0_M11_AXI_WREADY;
   wire [3:0]axi_interconnect_0_M11_AXI_WSTRB;
   wire axi_interconnect_0_M11_AXI_WVALID;
-  wire axi_ps2_0_PS2_Clk_TRI_I;
-  wire axi_ps2_0_PS2_Clk_TRI_O;
-  wire axi_ps2_0_PS2_Clk_TRI_T;
-  wire axi_ps2_0_PS2_Data_TRI_I;
-  wire axi_ps2_0_PS2_Data_TRI_O;
-  wire axi_ps2_0_PS2_Data_TRI_T;
+  wire axi_ps2_0_PS2_Clk_O;
   wire axi_ps2_0_PS2_interrupt;
   wire axi_quad_spi_0_ip2intc_irpt;
   wire axi_quad_spi_0_sck_o;
@@ -344,15 +326,12 @@ module design_1
   wire axi_tft_0_M_AXI_MM_WREADY;
   wire [7:0]axi_tft_0_M_AXI_MM_WSTRB;
   wire axi_tft_0_M_AXI_MM_WVALID;
-  wire [5:0]axi_tft_0_VGA_INTF_BLUE;
-  wire axi_tft_0_VGA_INTF_CLK;
-  wire axi_tft_0_VGA_INTF_DE;
-  wire axi_tft_0_VGA_INTF_DPS;
-  wire [5:0]axi_tft_0_VGA_INTF_GREEN;
-  wire axi_tft_0_VGA_INTF_HSYNC;
-  wire [5:0]axi_tft_0_VGA_INTF_RED;
-  wire axi_tft_0_VGA_INTF_VSYNC;
   wire axi_tft_0_ip2intc_irpt;
+  wire axi_tft_0_tft_hsync;
+  wire [5:0]axi_tft_0_tft_vga_b;
+  wire [5:0]axi_tft_0_tft_vga_g;
+  wire [5:0]axi_tft_0_tft_vga_r;
+  wire axi_tft_0_tft_vsync;
   wire axi_timer_0_interrupt;
   wire axi_uartlite_0_UART_RxD;
   wire axi_uartlite_0_UART_TxD;
@@ -423,29 +402,17 @@ module design_1
   wire sys_clock_1;
 
   assign MOSI = axi_quad_spi_1_io0_o;
-  assign PS2_Clk_tri_o = axi_ps2_0_PS2_Clk_TRI_O;
-  assign PS2_Clk_tri_t = axi_ps2_0_PS2_Clk_TRI_T;
-  assign PS2_Data_tri_o = axi_ps2_0_PS2_Data_TRI_O;
-  assign PS2_Data_tri_t = axi_ps2_0_PS2_Data_TRI_T;
+  assign PS2_Clk_O = axi_ps2_0_PS2_Clk_O;
+  assign PS2_Data_I_0_1 = PS2_Data_I;
   assign SCLK0 = axi_quad_spi_1_sck_o;
   assign SCLK1 = axi_quad_spi_0_sck_o;
   assign SS0[0] = axi_quad_spi_1_ss_o;
   assign SS1[0] = axi_quad_spi_0_ss_o;
-  assign VGA_INTF_0_blue[5:0] = axi_tft_0_VGA_INTF_BLUE;
-  assign VGA_INTF_0_clk = axi_tft_0_VGA_INTF_CLK;
-  assign VGA_INTF_0_de = axi_tft_0_VGA_INTF_DE;
-  assign VGA_INTF_0_dps = axi_tft_0_VGA_INTF_DPS;
-  assign VGA_INTF_0_green[5:0] = axi_tft_0_VGA_INTF_GREEN;
-  assign VGA_INTF_0_hsync = axi_tft_0_VGA_INTF_HSYNC;
-  assign VGA_INTF_0_red[5:0] = axi_tft_0_VGA_INTF_RED;
-  assign VGA_INTF_0_vsync = axi_tft_0_VGA_INTF_VSYNC;
   assign an[7:0] = axi_gpio_0_gpio2_io_o;
   assign axi_gpio_0_GPIO_TRI_I = dual_seven_seg_led_disp_tri_i[6:0];
   assign axi_gpio_1_GPIO2_TRI_I = sw_tri_i[15:0];
   assign axi_gpio_1_GPIO_TRI_I = led_tri_i[15:0];
   assign axi_gpio_2_GPIO_TRI_I = button_tri_i[4:0];
-  assign axi_ps2_0_PS2_Clk_TRI_I = PS2_Clk_tri_i;
-  assign axi_ps2_0_PS2_Data_TRI_I = PS2_Data_tri_i;
   assign axi_uartlite_0_UART_RxD = usb_uart_rxd;
   assign button_tri_o[4:0] = axi_gpio_2_GPIO_TRI_O;
   assign button_tri_t[4:0] = axi_gpio_2_GPIO_TRI_T;
@@ -456,6 +423,11 @@ module design_1
   assign led_tri_t[15:0] = axi_gpio_1_GPIO_TRI_T;
   assign reset_1 = reset;
   assign sys_clock_1 = sys_clock;
+  assign tft_hsync = axi_tft_0_tft_hsync;
+  assign tft_vga_b[5:0] = axi_tft_0_tft_vga_b;
+  assign tft_vga_g[5:0] = axi_tft_0_tft_vga_g;
+  assign tft_vga_r[5:0] = axi_tft_0_tft_vga_r;
+  assign tft_vsync = axi_tft_0_tft_vsync;
   assign usb_uart_txd = axi_uartlite_0_UART_TxD;
   design_1_axi_gpio_0_0 axi_gpio_0
        (.gpio2_io_i({1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0}),
@@ -817,12 +789,9 @@ module design_1
         .S01_AXI_wstrb(axi_tft_0_M_AXI_MM_WSTRB),
         .S01_AXI_wvalid(axi_tft_0_M_AXI_MM_WVALID));
   design_1_axi_ps2_0_0 axi_ps2_0
-       (.PS2_Clk_I(axi_ps2_0_PS2_Clk_TRI_I),
-        .PS2_Clk_O(axi_ps2_0_PS2_Clk_TRI_O),
-        .PS2_Clk_T(axi_ps2_0_PS2_Clk_TRI_T),
-        .PS2_Data_I(axi_ps2_0_PS2_Data_TRI_I),
-        .PS2_Data_O(axi_ps2_0_PS2_Data_TRI_O),
-        .PS2_Data_T(axi_ps2_0_PS2_Data_TRI_T),
+       (.PS2_Clk_I(1'b0),
+        .PS2_Clk_O(axi_ps2_0_PS2_Clk_O),
+        .PS2_Data_I(PS2_Data_I_0_1),
         .PS2_interrupt(axi_ps2_0_PS2_interrupt),
         .S_AXI_aclk(microblaze_0_Clk),
         .S_AXI_araddr(axi_interconnect_0_M09_AXI_ARADDR[4:0]),
@@ -955,14 +924,11 @@ module design_1
         .s_axi_wstrb(axi_interconnect_0_M11_AXI_WSTRB),
         .s_axi_wvalid(axi_interconnect_0_M11_AXI_WVALID),
         .sys_tft_clk(microblaze_0_Clk),
-        .tft_de(axi_tft_0_VGA_INTF_DE),
-        .tft_dps(axi_tft_0_VGA_INTF_DPS),
-        .tft_hsync(axi_tft_0_VGA_INTF_HSYNC),
-        .tft_vga_b(axi_tft_0_VGA_INTF_BLUE),
-        .tft_vga_clk(axi_tft_0_VGA_INTF_CLK),
-        .tft_vga_g(axi_tft_0_VGA_INTF_GREEN),
-        .tft_vga_r(axi_tft_0_VGA_INTF_RED),
-        .tft_vsync(axi_tft_0_VGA_INTF_VSYNC));
+        .tft_hsync(axi_tft_0_tft_hsync),
+        .tft_vga_b(axi_tft_0_tft_vga_b),
+        .tft_vga_g(axi_tft_0_tft_vga_g),
+        .tft_vga_r(axi_tft_0_tft_vga_r),
+        .tft_vsync(axi_tft_0_tft_vsync));
   design_1_axi_timer_0_0 axi_timer_0
        (.capturetrig0(1'b0),
         .capturetrig1(1'b0),
